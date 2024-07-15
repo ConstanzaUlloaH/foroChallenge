@@ -17,9 +17,11 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String login;
+    private String email;
     private String clave;
 
-
-
+    public Usuario(DatosRegistroUsuario datosRegistroUsuario) {
+        this.clave = datosRegistroUsuario.clave();
+        this.email = datosRegistroUsuario.email();
+    }
 }
