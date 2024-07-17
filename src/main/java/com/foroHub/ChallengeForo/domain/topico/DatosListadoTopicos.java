@@ -1,4 +1,4 @@
-package com.foroHub.ChallengeForo.topico;
+package com.foroHub.ChallengeForo.domain.topico;
 
 import java.util.Date;
 

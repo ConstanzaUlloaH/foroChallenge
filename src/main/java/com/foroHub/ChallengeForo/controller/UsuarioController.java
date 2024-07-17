@@ -1,8 +1,8 @@
 package com.foroHub.ChallengeForo.controller;
 
-import com.foroHub.ChallengeForo.usuario.DatosRegistroUsuario;
-import com.foroHub.ChallengeForo.usuario.Usuario;
-import com.foroHub.ChallengeForo.usuario.UsuarioRepository;
+import com.foroHub.ChallengeForo.domain.usuario.DatosRegistroUsuario;
+import com.foroHub.ChallengeForo.domain.usuario.Usuario;
+import com.foroHub.ChallengeForo.domain.usuario.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

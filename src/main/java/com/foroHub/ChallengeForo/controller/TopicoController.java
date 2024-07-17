@@ -1,8 +1,10 @@
 package com.foroHub.ChallengeForo.controller;
 
-import com.foroHub.ChallengeForo.topico.*;
-import com.foroHub.ChallengeForo.usuario.Usuario;
-import com.foroHub.ChallengeForo.usuario.UsuarioRepository;
+
+import com.foroHub.ChallengeForo.domain.topico.*;
+import com.foroHub.ChallengeForo.domain.usuario.Usuario;
+import com.foroHub.ChallengeForo.domain.usuario.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -25,8 +29,11 @@ public class TopicoController {
 
 
     @GetMapping
-    public ResponseEntity<Page<DatosListadoTopicos>> retornarListadoTopicos(@PageableDefault(size = 10) Pageable paginacion) {
-        return ResponseEntity.ok(topicoRepository.findByStatusTrue(paginacion).map(DatosListadoTopicos::new));
+    public ResponseEntity<List<DatosListadoTopicos>> retornarListadoTopicos() {
+        return ResponseEntity.ok(topicoRepository.findAll().stream()
+                .filter(topico -> topico.getStatus().equals("ACTIVO"))
+                .map(DatosListadoTopicos::new)
+                .toList());
     }
 
     @PostMapping
@@ -39,7 +46,6 @@ public class TopicoController {
 
         Usuario usuario = usuarioRepository.findById(datosRegistroTopico.idUsuario()).get();
         Topico topico = topicoRepository.save(new Topico(datosRegistroTopico, usuario));
-
         var datosRespuestaTopico = new DatosRespuestaTopico(
                 topico.getUsuario().getId(),
                 topico.getTitulo(),
@@ -49,11 +55,11 @@ public class TopicoController {
         return ResponseEntity.ok(datosRespuestaTopico);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<DatosRespuestaTopico> retornarDatosTopico(@PathVariable Long id) {
+
         if (! topicoRepository.findById(id).isPresent()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
 
         Topico topico = topicoRepository.findById(id).get();
@@ -69,7 +75,7 @@ public class TopicoController {
 
 
     @PutMapping
-    @jakarta.transaction.Transactional
+    @Transactional
     public ResponseEntity<DatosRespuestaTopico> actualizarTopico(@RequestBody @Valid DatosActualizacionTopico datosActualizacionTopico) {
 
         try {
@@ -95,14 +101,14 @@ public class TopicoController {
     }
 
     @DeleteMapping("/{id}")
-    @jakarta.transaction.Transactional
+    @Transactional
     public ResponseEntity eliminarTopico(@PathVariable Long id) {
         if (! topicoRepository.findById(id).isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Topico topico = topicoRepository.getReferenceById(id);
-        topico.desactivarTopico();
+        topicoRepository.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
 }

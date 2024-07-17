@@ -1,14 +1,12 @@
-package com.foroHub.ChallengeForo.topico;
+package com.foroHub.ChallengeForo.domain.topico;
 
-import com.foroHub.ChallengeForo.usuario.Usuario;
-import com.foroHub.ChallengeForo.usuario.UsuarioRepository;
+import com.foroHub.ChallengeForo.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Date;
 @Table(name = "topicos")
 @Entity(name = "Topicos")
@@ -41,11 +39,14 @@ public class Topico {
     }
 
     public void actualizarDatos(DatosActualizacionTopico datosActualizacionTopico) {
-        if (datosActualizacionTopico.mensaje() != null) {
+        String mensaje = datosActualizacionTopico.mensaje();
+        String titulo = datosActualizacionTopico.titulo();
+
+        if (mensaje != null && mensaje != this.mensaje ) {
             this.mensaje = datosActualizacionTopico.mensaje();
         }
 
-        if (datosActualizacionTopico.titulo() != null) {
+        if (titulo != null && titulo != this.mensaje) {
             this.titulo = datosActualizacionTopico.titulo();
         }
 
